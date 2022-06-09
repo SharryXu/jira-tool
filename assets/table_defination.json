@@ -1,0 +1,128 @@
+[
+    {
+        "Index": 1,
+        "Name": "entryDate",
+        "Type": "str",
+        "Sorted": false,
+        "IsDesc": false
+    },
+    {
+        "Index": 2,
+        "Name": "productManager",
+        "Type": "str",
+        "Sorted": false,
+        "IsDesc": false
+    },
+    {
+        "Index": 3,
+        "Name": "item",
+        "Type": "str",
+        "Sorted": false,
+        "IsDesc": false
+    },
+    {
+        "Index": 4,
+        "Name": "epicJiraTicket",
+        "Type": "str",
+        "Sorted": false,
+        "IsDesc": false
+    },
+    {
+        "Index": 5,
+        "Name": "milestone",
+        "Type": "Milestone",
+        "Sorted": true,
+        "IsDesc": false
+    },
+    {
+        "Index": 6,
+        "Name": "criticalDefect",
+        "Type": "bool",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 7,
+        "Name": "regulatoryComplianceUrgency",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 8,
+        "Name": "partnerPriority",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 9,
+        "Name": "productValue",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 10,
+        "Name": "marketingUrgency",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 11,
+        "Name": "revenue",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 12,
+        "Name": "infoSecFraudRiskUrgency",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 13,
+        "Name": "engineeringUrgency",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 14,
+        "Name": "defects",
+        "Type": "Priority",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 15,
+        "Name": "isThisAHardDate",
+        "Type": "bool",
+        "Sorted": true,
+        "IsDesc": true
+    },
+    {
+        "Index": 16,
+        "Name": "lastDateOfPrioritzation",
+        "Type": "str",
+        "Sorted": false,
+        "IsDesc": true
+    },
+    {
+        "Index": 17,
+        "Name": "deferred",
+        "Type": "bool",
+        "Sorted": false,
+        "IsDesc": true
+    },
+    {
+        "Index": 18,
+        "Name": "override",
+        "Type": "bool",
+        "Sorted": false,
+        "IsDesc": true
+    }
+]
