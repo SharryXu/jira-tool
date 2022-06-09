@@ -1,6 +1,6 @@
 import pathlib
 
-from jira_tool.table_defination import *
+from src.jira_tool.table_defination import *
 
 HERE = pathlib.Path(__file__).resolve().parent
 

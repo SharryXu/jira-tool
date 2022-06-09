@@ -1,6 +1,6 @@
 import pathlib
 
-from jira_tool.sprint_schedule import *
+from src.jira_tool.sprint_schedule import *
 
 HERE = pathlib.Path(__file__).resolve().parent
 
