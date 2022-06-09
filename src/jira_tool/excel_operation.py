@@ -1,3 +1,4 @@
+import pathlib
 import os
 from decimal import *
 from operator import attrgetter
@@ -7,10 +8,11 @@ import openpyxl
 from .milestone import *
 from .priority import *
 from .sprint_schedule import *
+from .table_defination import *
 from .story import *
 
 __all__ = ['read_excel_file', 'output_to_excel_file', 'output_to_csv_file',
-           'sort_stories', 'sort_stories_by_deferred', 'sort_stories_by_override']
+           'sort_stories', 'sort_stories_by_deferred', 'sort_stories_by_override', 'process_excel_file']
 
 
 def read_excel_file(path, table_defination: list[tuple], sprint_schedule: SprintScheduleStore) -> tuple:
@@ -114,3 +116,30 @@ def output_to_excel_file(file_name: str, columns: list[str], stories: list[Story
             cell.value = str(getattr(stories[row_index], column_name))
 
     wb.save(file_name)
+
+
+HERE = pathlib.Path(__file__).resolve().parent
+
+
+def process_excel_file(input_file: str, output_file: str, sprint_schedule_config: str = None, table_defination_config: str = None):
+    assets_folder = HERE.parent.parent / 'assets'
+    if sprint_schedule_config is None:
+        sprint_schedule_config = assets_folder / 'sprint_schedule.json'
+    if table_defination_config is None:
+        table_defination_config = assets_folder / 'table_defination.json'
+
+    sprint_schedule = SprintScheduleStore()
+    sprint_schedule.load(sprint_schedule_config)
+
+    table_defination = ExcelColumnStore()
+    table_defination.load(table_defination_config)
+    excel_columns = table_defination.to_list()
+
+    columns, stories = read_excel_file(
+        input_file, excel_columns, sprint_schedule)
+
+    sort_stories(stories, excel_columns)
+    # sort_stories_by_deferred(stories)
+    # sort_stories_by_override(stories)
+
+    output_to_excel_file(output_file, columns, stories, excel_columns)
