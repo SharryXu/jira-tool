@@ -1,7 +1,6 @@
 import os
 from decimal import *
 from importlib.resources import files
-from operator import attrgetter
 
 import openpyxl
 
@@ -12,7 +11,7 @@ from .story import *
 from .table_defination import *
 
 __all__ = ['read_excel_file', 'output_to_excel_file', 'output_to_csv_file',
-           'sort_stories', 'sort_stories_by_deferred', 'sort_stories_by_override', 'process_excel_file']
+           'process_excel_file']
 
 
 def read_excel_file(path, table_defination: list[tuple], sprint_schedule: SprintScheduleStore) -> tuple:
@@ -60,29 +59,6 @@ def read_excel_file(path, table_defination: list[tuple], sprint_schedule: Sprint
     return (columns, stories)
 
 
-def sort_stories(stories: list[Story], table_defination: list[tuple]):
-    sort_rule = []
-
-    for _, column_name, _, need_sort, sort_desc_or_asc in table_defination:
-        if need_sort is True:
-            sort_rule.append((column_name, sort_desc_or_asc))
-
-    _internal_sort_stories(stories, sort_rule)
-
-
-def sort_stories_by_deferred(stories: list[Story]):
-    pass
-
-
-def sort_stories_by_override(stories: list[Story]):
-    pass
-
-
-def _internal_sort_stories(stories: list[Story], keys: list[tuple]):
-    for key, isReversed in reversed(keys):
-        stories.sort(key=attrgetter(key), reverse=isReversed)
-
-
 def output_to_csv_file(file_name: str, stories: list[Story]):
     if os.path.exists(file_name):
         os.remove(file_name)
@@ -121,13 +97,15 @@ def output_to_excel_file(file_name: str, columns: list[str], stories: list[Story
 def process_excel_file(input_file: str, output_file: str, sprint_schedule_config: str = None, table_defination_config: str = None):
     sprint_schedule = SprintScheduleStore()
     if sprint_schedule_config is None:
-        sprint_schedule.load(files('jira_tool.assets').joinpath('sprint_schedule.json').read_text())
+        sprint_schedule.load(files('jira_tool.assets').joinpath(
+            'sprint_schedule.json').read_text())
     else:
         sprint_schedule.load_file(sprint_schedule_config)
 
     table_defination = ExcelColumnStore()
     if table_defination_config is None:
-        table_defination.load(files('jira_tool.assets').joinpath('table_defination.json').read_text())
+        table_defination.load(files('jira_tool.assets').joinpath(
+            'table_defination.json').read_text())
     else:
         table_defination.load_file(table_defination_config)
 
@@ -137,7 +115,7 @@ def process_excel_file(input_file: str, output_file: str, sprint_schedule_config
         input_file, excel_columns, sprint_schedule)
 
     sort_stories(stories, excel_columns)
-    # sort_stories_by_deferred(stories)
-    # sort_stories_by_override(stories)
+    stories = sort_stories_by_override(stories)
+    stories = sort_stories_by_deferred(stories)
 
     output_to_excel_file(output_file, columns, stories, excel_columns)
