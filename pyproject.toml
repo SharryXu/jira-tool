@@ -27,3 +27,9 @@ dev = ["pip-tools", "pytest"]
 
 [project.urls]
 Homepage = "https://github.com/SharryXu/jira-tool"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"jira_tool.assets" = ["*.json"]
