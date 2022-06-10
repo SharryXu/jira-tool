@@ -1,3 +1,4 @@
+import logging
 import os
 from decimal import *
 from importlib.resources import files
@@ -99,6 +100,7 @@ def process_excel_file(input_file: str, output_file: str, sprint_schedule_config
     if sprint_schedule_config is None:
         sprint_schedule.load(files('jira_tool.assets').joinpath(
             'sprint_schedule.json').read_text())
+        logging.info('Loading default sprint schedule...')
     else:
         sprint_schedule.load_file(sprint_schedule_config)
 
@@ -106,6 +108,7 @@ def process_excel_file(input_file: str, output_file: str, sprint_schedule_config
     if table_defination_config is None:
         table_defination.load(files('jira_tool.assets').joinpath(
             'table_defination.json').read_text())
+        logging.info('Loading default table defination...')
     else:
         table_defination.load_file(table_defination_config)
 
@@ -119,3 +122,5 @@ def process_excel_file(input_file: str, output_file: str, sprint_schedule_config
     stories = sort_stories_by_deferred(stories)
 
     output_to_excel_file(output_file, columns, stories, excel_columns)
+
+    logging.info('%s has been saved.', output_file)
