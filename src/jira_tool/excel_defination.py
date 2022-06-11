@@ -1,12 +1,13 @@
+from datetime import datetime
 import json
 
 from .milestone import Milestone
 from .priority import Priority
 
-__all__ = ['ExcelColumnStore']
+__all__ = ['ExcelDefination']
 
 
-class ExcelColumnStore():
+class ExcelDefination():
     @classmethod
     def __init__(self) -> None:
         self.store: list[tuple] = []
@@ -28,7 +29,7 @@ class ExcelColumnStore():
                 if key.lower() in 'name':
                     column_name = value
                 if key.lower() in 'type':
-                    column_type = ExcelColumnStore._convert_str_to_type(value)
+                    column_type = ExcelDefination._convert_str_to_type(value)
                 if key.lower() in 'sorted':
                     column_sorted = value
                 if key.lower() in 'isdesc':
@@ -55,7 +56,7 @@ class ExcelColumnStore():
                     if key.lower() in 'name':
                         column_name = value
                     if key.lower() in 'type':
-                        column_type = ExcelColumnStore._convert_str_to_type(
+                        column_type = ExcelDefination._convert_str_to_type(
                             value)
                     if key.lower() in 'sorted':
                         column_sorted = value
@@ -72,6 +73,8 @@ class ExcelColumnStore():
             return str
         elif type_str == 'bool':
             return bool
+        elif type_str == 'datetime':
+            return datetime
         elif type_str == 'priority':
             return Priority
         elif type_str == 'milestone':
@@ -85,7 +88,7 @@ class ExcelColumnStore():
             yield item
 
     @classmethod
-    def to_list(self) -> list[tuple]:
+    def get_columns(self) -> list[tuple]:
         result = []
         for item in self.store:
             result.append(item)

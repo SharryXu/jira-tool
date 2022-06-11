@@ -1,5 +1,4 @@
-import datetime
-import importlib
+from datetime import datetime
 import re
 from decimal import *
 from operator import attrgetter
@@ -35,12 +34,7 @@ def convert_to_decimal(raw: Any) -> Decimal:
 
 def convert_to_datetime(raw: Any) -> datetime:
     raw = str(raw).strip()
-    pattern = re.compile('[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{2,4}')
-    result = pattern.search(raw)
-    if result is not None:
-        return parser.parse(result.group())
-    else:
-        return None
+    return parser.parse(raw)
 
 
 class Story(object):
@@ -58,11 +52,20 @@ class Story(object):
             elif column[2] is Milestone:
                 setattr(cls, column[1], None)
 
+    def get_value(cls, property_name: str) -> str:
+        property = getattr(cls, property_name, None)
+        if property is None:
+            return ''
+        elif type(property) is datetime:
+            return property.date().isoformat()
+        else:
+            return str(property)
 
-def sort_stories(stories: list[Story], table_defination: list[tuple]):
+
+def sort_stories(stories: list[Story], excel_defination_columns: list[tuple]):
     sort_rule = []
 
-    for _, column_name, _, need_sort, sort_desc_or_asc in table_defination:
+    for _, column_name, _, need_sort, sort_desc_or_asc in excel_defination_columns:
         if need_sort is True:
             sort_rule.append((column_name, sort_desc_or_asc))
 
@@ -96,10 +99,10 @@ def _raise_story_priority(stories: list[Story], attribute_name: str) -> list[Sto
     j = 0
     for i in range(len(stories)):
         if getattr(stories[i], attribute_name) is True:
-            result[j]=stories[i]
+            result[j] = stories[i]
             j += 1
     for i in range(len(stories)):
         if getattr(stories[i], attribute_name) is False:
-            result[j]=stories[i]
+            result[j] = stories[i]
             j += 1
     return result

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sharry-jira-tool"
-version = "0.1.5"
+version = "0.1.6"
 description = "Sort Jira stories in Excel"
 readme = "README.md"
 authors = [{ name = "Sharry Xu", email = "sharry.xu@outlook.com" }]

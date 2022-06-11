@@ -2,7 +2,7 @@
     {
         "Index": 1,
         "Name": "entryDate",
-        "Type": "str",
+        "Type": "datetime",
         "Sorted": false,
         "IsDesc": false
     },
@@ -107,7 +107,7 @@
     {
         "Index": 16,
         "Name": "lastDateOfPrioritzation",
-        "Type": "str",
+        "Type": "datetime",
         "Sorted": false,
         "IsDesc": true
     },
