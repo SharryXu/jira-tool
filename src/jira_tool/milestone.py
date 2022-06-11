@@ -19,14 +19,13 @@ class Milestone(object):
     def __init__(cls, raw: Any) -> None:
         cls.raw: str = raw
         cls.sprint = cls.raw
-        #cls.end_date = convert_to_datetime(cls.raw)
         cls.priority = 0
 
-    def calc_priority(cls, sprintScheduleStore: SprintScheduleStore) -> None:
+    def calc_priority(cls, sprint_schedule: SprintScheduleStore) -> None:
         if cls.sprint is None:
             cls.priority = 0
         else:
-            cls.priority = sprintScheduleStore.get_priority(cls.sprint)
+            cls.priority = sprint_schedule.get_priority(cls.sprint)
 
     def __str__(cls) -> str:
         return cls.raw
@@ -48,4 +47,6 @@ class Milestone(object):
             return True
         else:
             return False
-
+    
+    def __str__(self):
+        return self.raw
