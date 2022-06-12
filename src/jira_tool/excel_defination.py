@@ -14,6 +14,8 @@ class ExcelDefination():
 
     @classmethod
     def load(self, content: str):
+        if content is None:
+            return
         raw_data = json.loads(content)
 
         for item in raw_data:
@@ -40,6 +42,8 @@ class ExcelDefination():
 
     @classmethod
     def load_file(self, file_path: str):
+        if file_path is None:
+            return
         with open(file=file_path, mode='r') as table_defination_file:
             raw_data = json.load(table_defination_file)
 

@@ -1,8 +1,8 @@
 
 import pathlib
 
-from src.jira_tool.milestone import Milestone
-from src.jira_tool.sprint_schedule import *
+from jira_tool.milestone import Milestone
+from jira_tool.sprint_schedule import *
 
 HERE = pathlib.Path(__file__).resolve().parent
 

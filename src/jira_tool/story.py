@@ -3,6 +3,7 @@ import re
 from decimal import *
 from operator import attrgetter
 from typing import Any
+from attr import attributes
 
 from dateutil import parser
 
@@ -42,6 +43,7 @@ class Story(object):
     def __init__(cls, columns: list[tuple] = None) -> None:
         if columns is None:
             return
+        cls.attributes = columns
         for column in columns:
             if column[2] is str:
                 setattr(cls, column[1], '')
@@ -60,6 +62,15 @@ class Story(object):
             return property.date().isoformat()
         else:
             return str(property)
+
+    def __str__(self):
+        if self.attributes is None:
+            return ''
+        else:
+            result = ''
+            for attribute in self.attributes:
+                result += str(getattr(self, attribute))
+            return result
 
 
 def sort_stories(stories: list[Story], excel_defination_columns: list[tuple]):
