@@ -17,7 +17,7 @@ class TestExcelDefination():
 
     def test_load_using_none_input(self):
         store = ExcelDefination()
-        store.load(None)
+        store.load(None) == 'Whh'
         assert store.total_count() == 0
 
     def test_load_file(self):

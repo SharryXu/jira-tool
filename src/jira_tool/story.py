@@ -1,23 +1,29 @@
-from datetime import datetime
 import re
+from datetime import datetime
 from decimal import *
 from operator import attrgetter
 from typing import Any
-from attr import attributes
 
+from attr import attributes
 from dateutil import parser
 
 from .milestone import *
 from .priority import *
 
-__all__ = ["Story", "convert_to_bool",
-           "convert_to_datetime", "convert_to_decimal",
-           "sort_stories", "sort_stories_by_deferred", "sort_stories_by_override"]
+__all__ = [
+    "Story",
+    "convert_to_bool",
+    "convert_to_datetime",
+    "convert_to_decimal",
+    "sort_stories",
+    "sort_stories_by_deferred",
+    "sort_stories_by_override",
+]
 
 
 def convert_to_bool(raw: Any) -> bool:
     raw = str(raw).strip().upper()
-    if raw == 'YES':
+    if raw == "YES":
         return True
     else:
         return False
@@ -25,7 +31,7 @@ def convert_to_bool(raw: Any) -> bool:
 
 def convert_to_decimal(raw: Any) -> Decimal:
     raw = str(raw).strip()
-    pattern = re.compile('[0-9.]{1,10}')
+    pattern = re.compile("[0-9.]{1,10}")
     result = pattern.search(raw)
     if result is not None:
         return Decimal(result.group())
@@ -39,25 +45,24 @@ def convert_to_datetime(raw: Any) -> datetime:
 
 
 class Story(object):
-    @classmethod
-    def __init__(cls, columns: list[tuple] = None) -> None:
+    def __init__(self, columns: list[tuple] = None) -> None:
         if columns is None:
             return
-        cls.attributes = columns
+        self.attributes = columns
         for column in columns:
             if column[2] is str:
-                setattr(cls, column[1], '')
+                setattr(self, column[1], "")
             elif column[2] is bool:
-                setattr(cls, column[1], False)
+                setattr(self, column[1], False)
             elif column[2] is Priority:
-                setattr(cls, column[1], Priority.NA)
+                setattr(self, column[1], Priority.NA)
             elif column[2] is Milestone:
-                setattr(cls, column[1], None)
+                setattr(self, column[1], None)
 
-    def get_value(cls, property_name: str) -> str:
-        property = getattr(cls, property_name, None)
+    def get_value(self, property_name: str) -> str:
+        property = getattr(self, property_name, None)
         if property is None:
-            return ''
+            return ""
         elif type(property) is datetime:
             return property.date().isoformat()
         else:
@@ -65,9 +70,9 @@ class Story(object):
 
     def __str__(self):
         if self.attributes is None:
-            return ''
+            return ""
         else:
-            result = ''
+            result = ""
             for attribute in self.attributes:
                 result += str(getattr(self, attribute))
             return result
@@ -89,16 +94,16 @@ def _internal_sort_stories(stories: list[Story], keys: list[tuple]):
 
 
 def sort_stories_by_deferred(stories: list[Story]) -> list[Story]:
-    return _raise_story_priority(stories, 'deferred')
+    return _raise_story_priority(stories, "deferred")
 
 
 def sort_stories_by_override(stories: list[Story]) -> list[Story]:
-    return _raise_story_priority(stories, 'override')
+    return _raise_story_priority(stories, "override")
 
 
-'''
+"""
 Only bool indicator for now
-'''
+"""
 
 
 def _raise_story_priority(stories: list[Story], attribute_name: str) -> list[Story]:
