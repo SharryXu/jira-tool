@@ -112,11 +112,13 @@ def output_to_excel_file(file_name: str, columns_in_excel: list[str], stories: l
 
 
 def process_excel_file(input_file: str, output_file: str, sprint_schedule_config: str = None, excel_defination_config: str = None):
+    logger = logging.getLogger()
+
     sprint_schedule = SprintScheduleStore()
     if sprint_schedule_config is None:
         sprint_schedule.load(files('jira_tool.assets').joinpath(
             'sprint_schedule.json').read_text())
-        logging.info('Loading default sprint schedule...')
+        logger.info('Loading default sprint schedule...')
     else:
         sprint_schedule.load_file(sprint_schedule_config)
 
@@ -124,7 +126,7 @@ def process_excel_file(input_file: str, output_file: str, sprint_schedule_config
     if excel_defination_config is None:
         excel_defination.load(files('jira_tool.assets').joinpath(
             'excel_defination.json').read_text())
-        logging.info('Loading default excel defination...')
+        logger.info('Loading default excel defination...')
     else:
         excel_defination.load_file(excel_defination_config)
 
@@ -140,4 +142,4 @@ def process_excel_file(input_file: str, output_file: str, sprint_schedule_config
     output_to_excel_file(output_file, excel_columns,
                          stories, excel_defination_columns)
 
-    logging.info('%s has been saved.', output_file)
+    logger.info('%s has been saved.', output_file)
