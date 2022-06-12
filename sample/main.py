@@ -1,9 +1,13 @@
 import pathlib
+import warnings
 
-from jira_tool.excel_operation import process_excel_file
+from jira_tool import process_excel_file
+
+warnings.simplefilter(action='ignore', category=UserWarning)
 
 # Current directory
 HERE = pathlib.Path(__file__).resolve().parent
+
 
 def main():
     input_file = HERE.parent / 'docs/red.xlsx'

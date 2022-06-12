@@ -1,5 +1,14 @@
 import logging
+from importlib import metadata
 
-__version__ = "0.1.6"
+from . import *
 
-logging.basicConfig(filename='jira_tool.log', format='%(asctime)s : %(levelname)s:%(message)s')
+__version__ = metadata.version('sharry_jira_tool')
+
+__all__ = ["excel_defination", "excel_operation",
+           "milestone", "priority", "sprint_schedule", "story"]
+
+del metadata
+
+logging.basicConfig(filename='jira_tool.log',
+                    format='%(asctime)s : %(levelname)s:%(message)s')
