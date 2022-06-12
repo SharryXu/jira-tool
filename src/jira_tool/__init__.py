@@ -10,8 +10,9 @@ from .story import Story, sort_stories, sort_stories_by_deferred, sort_stories_b
 
 __version__ = metadata.version('sharry_jira_tool')
 
-__all__ = ["excel_defination", "excel_operation",
-           "milestone", "priority", "sprint_schedule", "story"]
+__all__ = ["ExcelDefination", "read_excel_file", "output_to_csv_file", "output_to_excel_file",
+           "process_excel_file", "Milestone", "Priority", "SprintScheduleStore", "Story",
+           "sort_stories", "sort_stories_by_deferred", "sort_stories_by_override"]
 
 del metadata
 
