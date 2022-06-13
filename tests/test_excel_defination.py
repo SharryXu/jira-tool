@@ -5,10 +5,9 @@ from jira_tool.excel_defination import *
 HERE = pathlib.Path(__file__).resolve().parent
 
 
-class TestExcelDefination():
+class TestExcelDefination:
     def test_load_happy_path(self):
-        excel_defination_filename = HERE.parent / \
-            'src/jira_tool/assets/excel_defination.json'
+        excel_defination_filename = HERE / "files/excel_defination.json"
 
         store = ExcelDefination()
         with open(excel_defination_filename) as file:
@@ -17,12 +16,11 @@ class TestExcelDefination():
 
     def test_load_using_none_input(self):
         store = ExcelDefination()
-        store.load(None) == 'Whh'
+        store.load(None) == "Whh"
         assert store.total_count() == 0
 
     def test_load_file(self):
-        excel_defination_filename = HERE.parent / \
-            'src/jira_tool/assets/excel_defination.json'
+        excel_defination_filename = HERE / "files/excel_defination.json"
         store = ExcelDefination()
         store.load_file(excel_defination_filename)
         assert store.total_count() > 0
@@ -33,8 +31,7 @@ class TestExcelDefination():
         assert store.total_count() == 0
 
     def test_iter(self):
-        excel_defination_filename = HERE.parent / \
-            'src/jira_tool/assets/excel_defination.json'
+        excel_defination_filename = HERE / "files/excel_defination.json"
         store = ExcelDefination()
         store.load_file(excel_defination_filename)
         items = []

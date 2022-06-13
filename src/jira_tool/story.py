@@ -6,6 +6,8 @@ from typing import Any
 
 from dateutil import parser
 
+from jira_tool.excel_defination import ExcelDefination
+
 from .milestone import *
 from .priority import *
 
@@ -81,8 +83,9 @@ class Story(object):
             return result
 
 
-def sort_stories(stories: list[Story], excel_defination_columns: list[tuple]):
+def sort_stories(stories: list[Story], excel_defination: ExcelDefination):
     sort_rule = []
+    excel_defination_columns = excel_defination.get_columns()
 
     for _, column_name, _, need_sort, sort_desc_or_asc in excel_defination_columns:
         if need_sort is True:

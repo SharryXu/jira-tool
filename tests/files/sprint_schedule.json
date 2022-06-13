@@ -1,0 +1,50 @@
+[
+    {
+        "Priority": 1,
+        "Sprints": ["R134 S1", "M109"]
+    },
+    {
+        "Priority": 2,
+        "Sprints": ["R134 S2", "M110"]
+    },
+    {
+        "Priority": 3,
+        "Sprints": ["M111", "R135 S1"]
+    },
+    {
+        "Priority": 4,
+        "Sprints": ["M112", "R135 S2"]
+    },
+    {
+        "Priority": 5,
+        "Sprints": ["M113", "R136 S1", "M114"]
+    },
+    {
+        "Priority": 6,
+        "Sprints": ["R136 S2", "M115"]
+    },
+    {
+        "Priority": 7,
+        "Sprints": ["M116", "R137 S1"]
+    },
+    {
+        "Priority": 8,
+        "Sprints": ["M117", "R137 S2", "M118"]
+    },
+    {
+        "Priority": 9,
+        "Sprints": ["M119", "R138 S1"]
+    },
+    {
+        "Priority": 10,
+        "Sprints": ["M120", "R138 S2"]
+    },
+    {
+        "Priority": 11,
+        "Sprints": ["M121", "R139 S1"]
+    },
+    {
+        "Priority": 12,
+        "SSprints": ["M122", "R139 S2"]
+    }
+]
