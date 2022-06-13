@@ -1,5 +1,5 @@
-from src.jira_tool.story import *
-from src.jira_tool.priority import *
+from jira_tool.story import *
+from jira_tool.priority import *
 
 class TestPriority():
     def test_compare_priority(self):
