@@ -1,5 +1,6 @@
 import logging
 import os
+import warnings
 from csv import excel
 from datetime import datetime
 from decimal import *
@@ -19,6 +20,8 @@ __all__ = [
     "output_to_csv_file",
     "process_excel_file",
 ]
+
+warnings.simplefilter(action="ignore", category=UserWarning)
 
 
 def read_excel_file(

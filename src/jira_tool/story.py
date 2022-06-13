@@ -39,7 +39,9 @@ def convert_to_decimal(raw: Any) -> Decimal:
         return Decimal(0)
 
 
-def convert_to_datetime(raw: Any) -> datetime:
+def convert_to_datetime(raw: Any) -> (datetime | None):
+    if raw is None:
+        return
     raw = str(raw).strip()
     return parser.parse(raw)
 
@@ -57,6 +59,8 @@ class Story(object):
             elif column[2] is Priority:
                 setattr(self, column[1], Priority.NA)
             elif column[2] is Milestone:
+                setattr(self, column[1], None)
+            elif column[2] is datetime:
                 setattr(self, column[1], None)
 
     def get_value(self, property_name: str) -> str:
