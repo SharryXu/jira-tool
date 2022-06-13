@@ -4,7 +4,6 @@ from decimal import *
 from operator import attrgetter
 from typing import Any
 
-from attr import attributes
 from dateutil import parser
 
 from .milestone import *
