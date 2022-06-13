@@ -1,4 +1,5 @@
 import json
+import pathlib
 from datetime import datetime
 
 from .milestone import Milestone
@@ -40,7 +41,7 @@ class ExcelDefination:
             )
 
     def load_file(self, file_path: str):
-        if file_path is None:
+        if file_path is None or not pathlib.Path(file_path).is_file():
             return
         with open(file=file_path, mode="r") as table_defination_file:
             raw_data = json.load(table_defination_file)

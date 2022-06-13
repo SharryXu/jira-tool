@@ -20,6 +20,7 @@ __all__ = [
     "process_excel_file",
 ]
 
+# Currently, the openpyxl package will report an obsolete warning.
 warnings.simplefilter(action="ignore", category=UserWarning)
 
 
