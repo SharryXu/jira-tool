@@ -1,7 +1,6 @@
 import logging
 import os
 import warnings
-from csv import excel
 from datetime import datetime
 from decimal import *
 from importlib.resources import files
@@ -21,13 +20,16 @@ __all__ = [
     "process_excel_file",
 ]
 
+# Currently, the openpyxl package will report an obsolete warning.
 warnings.simplefilter(action="ignore", category=UserWarning)
 
 
 def read_excel_file(
-    path, excel_defination: list[tuple], sprint_schedule: SprintScheduleStore
+    excel_file: str,
+    excel_defination: ExcelDefination,
+    sprint_schedule: SprintScheduleStore,
 ) -> tuple:
-    wb = openpyxl.load_workbook(path)
+    wb = openpyxl.load_workbook(excel_file)
     sheet = wb.active
 
     columns = []
@@ -49,13 +51,15 @@ def read_excel_file(
 
     stories = []
 
+    excel_defination_columns = excel_defination.get_columns()
+
     for row in rows:
         if _should_skip(row):
             continue
 
         story: Story = Story()
         for column_index in range(len(row)):
-            column = excel_defination[column_index]
+            column = excel_defination_columns[column_index]
             if column[2] is str:
                 setattr(story, column[1], row[column_index].value)
             elif column[2] is bool:
@@ -102,7 +106,7 @@ def output_to_excel_file(
     file_name: str,
     columns_in_excel: list[str],
     stories: list[Story],
-    excel_defination: list[tuple],
+    excel_defination: ExcelDefination,
 ):
     if os.path.exists(file_name):
         os.remove(file_name)
@@ -115,8 +119,10 @@ def output_to_excel_file(
         cell = sheet.cell(row=1, column=column_index + 1)
         cell.value = columns_in_excel[column_index]
 
+    excel_defination_columns = excel_defination.get_columns()
+
     for row_index in range(len(stories)):
-        for column_index, column_name, _, _, _ in excel_defination:
+        for column_index, column_name, _, _, _ in excel_defination_columns:
             cell = sheet.cell(row=row_index + 2, column=column_index)
             cell.value = stories[row_index].get_value(column_name)
 
@@ -129,7 +135,7 @@ def process_excel_file(
     sprint_schedule_config: str = None,
     excel_defination_config: str = None,
 ):
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
 
     sprint_schedule = SprintScheduleStore()
     if sprint_schedule_config is None:
@@ -149,16 +155,14 @@ def process_excel_file(
     else:
         excel_defination.load_file(excel_defination_config)
 
-    excel_defination_columns = excel_defination.get_columns()
-
     excel_columns, stories = read_excel_file(
-        input_file, excel_defination_columns, sprint_schedule
+        input_file, excel_defination, sprint_schedule
     )
 
-    sort_stories(stories, excel_defination_columns)
+    sort_stories(stories, excel_defination)
     stories = sort_stories_by_override(stories)
     stories = sort_stories_by_deferred(stories)
 
-    output_to_excel_file(output_file, excel_columns, stories, excel_defination_columns)
+    output_to_excel_file(output_file, excel_columns, stories, excel_defination)
 
     logger.info("%s has been saved.", output_file)
