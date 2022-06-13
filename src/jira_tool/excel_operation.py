@@ -1,7 +1,6 @@
 import logging
 import os
 import warnings
-from csv import excel
 from datetime import datetime
 from decimal import *
 from importlib.resources import files
@@ -135,7 +134,7 @@ def process_excel_file(
     sprint_schedule_config: str = None,
     excel_defination_config: str = None,
 ):
-    logger = logging.getLogger()
+    logger = logging.getLogger(__name__)
 
     sprint_schedule = SprintScheduleStore()
     if sprint_schedule_config is None:
