@@ -74,12 +74,13 @@ class Story(object):
             return str(property)
 
     def __str__(self):
+        separator = ", "
         if self.attributes is None:
             return ""
         else:
             result = ""
             for attribute in self.attributes:
-                result += str(getattr(self, attribute))
+                result += f"{str(getattr(self, attribute))}{separator}"
             return result
 
 

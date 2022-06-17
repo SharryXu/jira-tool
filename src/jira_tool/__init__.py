@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging.config
 from importlib import metadata
 from importlib.resources import files

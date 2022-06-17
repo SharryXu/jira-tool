@@ -1,5 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+This module offers a set of operations that user can modify their excel files.
+"""
 import logging
 import os
+import pathlib
 import warnings
 from datetime import datetime
 from decimal import *
@@ -25,11 +30,33 @@ warnings.simplefilter(action="ignore", category=UserWarning)
 
 
 def read_excel_file(
-    excel_file: str,
+    file: str,
     excel_defination: ExcelDefination,
     sprint_schedule: SprintScheduleStore,
 ) -> tuple:
-    wb = openpyxl.load_workbook(excel_file)
+    """
+    Read and parse the excel file
+
+    :parm file:
+        The excel file that you want to read
+
+    :parm excel_defination:
+        The excel column defination which is imported from the :py:class:`ExcelDefination`
+
+    :parm sprint_schedule:
+        The priority mapping for the :py:class:`Milestone` object.
+
+    :return:
+        A :py:class:`tuple` object which contains a list of column name and a list of :py:class:`Story`.
+    """
+
+    if file is None or not pathlib.Path(file).is_absolute():
+        raise ValueError(f"The input excel file is invalid.")
+
+    if not pathlib.Path(file).exists():
+        raise ValueError(f"The input excel file: {file} cannot be found.")
+
+    wb = openpyxl.load_workbook(file)
     sheet = wb.active
 
     columns = []
@@ -74,6 +101,7 @@ def read_excel_file(
                 setattr(story, column[1], milestone)
         stories.append(story)
 
+    wb.close()
     return (columns, stories)
 
 
@@ -87,46 +115,81 @@ def _should_skip(row: list) -> bool:
     return False
 
 
-def output_to_csv_file(file_name: str, stories: list[Story]):
-    if os.path.exists(file_name):
-        os.remove(file_name)
+def output_to_csv_file(
+    file: str,
+    stories: list[Story],
+    over_write: bool = True,
+):
+    if file is None or not pathlib.Path(file).is_absolute():
+        raise ValueError(f"The file is invalid.")
 
-    file = open(file_name, mode="w")
+    if not pathlib.Path(file).exists():
+        if over_write is True:
+            os.remove(file)
+        else:
+            raise ValueError(f"The csv file: {file} is already exist.")
 
-    separator = "-" * 300
-    for story in stories:
-        file.write(f"{separator}\n")
-        file.write(
-            f"{story.epicJiraTicket}|{story.milestone}|{story.criticalDefect}|{story.regulatoryComplianceUrgency}\n"
-        )
-    file.close()
+    with open(file, mode="w") as csv_file:
+        separator = "-" * 300
+        for story in stories:
+            csv_file.write(f"{separator}\n")
+            csv_file.write(str(story))
 
 
 def output_to_excel_file(
-    file_name: str,
-    columns_in_excel: list[str],
+    file: str,
     stories: list[Story],
     excel_defination: ExcelDefination,
+    columns_in_excel: list[str] = None,
+    over_write: bool = True,
 ):
-    if os.path.exists(file_name):
-        os.remove(file_name)
+    """
+    Generate excel file
+
+    :parm file:
+        Output excel file name including the path
+
+    :parm stories:
+        A list of :py:class:`Story` which need to be wrote to the excel
+
+    :parm excel_defination:
+        The excel column defination which is imported from the :py:class:`ExcelDefination`
+
+    :parm columns_in_excel:
+        Using separate column names instead of importing from the :py:class:`ExcelDefination`. Usually, it comes from the input excel file.
+
+    :parm over_write:
+        Whether or not the exist output file will be over-write.
+    """
+    if file is None or not pathlib.Path(file).is_absolute():
+        raise ValueError(f"The output file name is invalid.")
+
+    if pathlib.Path(file).exists():
+        if over_write is True:
+            os.remove(file)
+        else:
+            raise ValueError(f"The output excel file: {file} is already exist.")
 
     wb = openpyxl.Workbook()
-
     sheet = wb.active
 
-    for column_index in range(len(columns_in_excel)):
-        cell = sheet.cell(row=1, column=column_index + 1)
-        cell.value = columns_in_excel[column_index]
-
     excel_defination_columns = excel_defination.get_columns()
+
+    columns = columns_in_excel
+    if columns is None:
+        columns = [column_name for _, column_name, _, _, _ in excel_defination_columns]
+
+    for column_index in range(len(columns)):
+        cell = sheet.cell(row=1, column=column_index + 1)
+        cell.value = columns[column_index]
 
     for row_index in range(len(stories)):
         for column_index, column_name, _, _, _ in excel_defination_columns:
             cell = sheet.cell(row=row_index + 2, column=column_index)
             cell.value = stories[row_index].get_value(column_name)
 
-    wb.save(file_name)
+    wb.save(file)
+    wb.close()
 
 
 def process_excel_file(
@@ -134,9 +197,27 @@ def process_excel_file(
     output_file: str,
     sprint_schedule_config: str = None,
     excel_defination_config: str = None,
+    over_write: bool = True,
 ):
-    logger = logging.getLogger(__name__)
+    """
+    Sort the excel file and output the result
 
+    :parm input_file:
+        The excel file need to be sorted
+
+    :parm output_file:
+        The sorted excel file location
+
+    :parm sprint_schedule_config:
+        The JSON file which contains the priority list to calculate the :py:class:`Milestone`
+
+    :parm excel_defination_config:
+        The JSON file which contains the input excel file's structure.
+
+    :parm over_write:
+        Whether or not the exist output file will be over-write.
+    """
+    logger = logging.getLogger(__name__)
     sprint_schedule = SprintScheduleStore()
     if sprint_schedule_config is None:
         sprint_schedule.load(
@@ -163,6 +244,8 @@ def process_excel_file(
     stories = sort_stories_by_override(stories)
     stories = sort_stories_by_deferred(stories)
 
-    output_to_excel_file(output_file, excel_columns, stories, excel_defination)
+    output_to_excel_file(
+        output_file, stories, excel_defination, excel_columns, over_write
+    )
 
     logger.info("%s has been saved.", output_file)
