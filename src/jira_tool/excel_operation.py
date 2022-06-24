@@ -177,7 +177,7 @@ def output_to_excel_file(
         cell.value = columns[column_index]
 
     for row_index in range(len(stories)):
-        for column_index, column_name, _, _, _ in excel_defination_columns:
+        for column_index, column_name, _, _, _, _ in excel_defination_columns:
             cell = sheet.cell(row=row_index + 2, column=column_index)
             cell.value = stories[row_index].get_value(column_name)
 

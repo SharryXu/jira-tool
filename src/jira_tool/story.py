@@ -114,7 +114,7 @@ def sort_stories(stories: list[Story], excel_defination: ExcelDefination):
     sort_rule = []
     excel_defination_columns = excel_defination.get_columns()
 
-    for _, column_name, _, need_sort, sort_desc_or_asc in excel_defination_columns:
+    for _, column_name, _, need_sort, sort_desc_or_asc, _ in excel_defination_columns:
         if need_sort is True:
             sort_rule.append((column_name, sort_desc_or_asc))
 
@@ -135,7 +135,8 @@ def sort_stories_by_override(stories: list[Story]) -> list[Story]:
 
 
 def sort_stories_by_score(stories: list[Story], reverse: bool = True) -> list[Story]:
-    return stories.sort(key=lambda s: s.score, reverse=reverse)
+    stories.sort(key=lambda s: s.score, reverse=reverse)
+    return stories
 
 
 """
