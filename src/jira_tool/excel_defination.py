@@ -35,6 +35,7 @@ class ExcelDefination:
             column_type = None
             column_sorted = False
             column_isDesc = False
+            column_weight = 0
 
             for key, value in item.items():
                 if key.lower() in "index":
@@ -47,9 +48,18 @@ class ExcelDefination:
                     column_sorted = value
                 if key.lower() in "isdesc":
                     column_isDesc = value
+                if key.lower() in "weight":
+                    column_weight = value
 
             self.store.append(
-                (column_index, column_name, column_type, column_sorted, column_isDesc)
+                (
+                    column_index,
+                    column_name,
+                    column_type,
+                    column_sorted,
+                    column_isDesc,
+                    column_weight,
+                )
             )
 
     def load_file(self, file: str):
@@ -75,6 +85,7 @@ class ExcelDefination:
                 column_type = None
                 column_sorted = False
                 column_isDesc = False
+                column_weight = 0
 
                 for key, value in item.items():
                     if key.lower() in "index":
@@ -87,6 +98,8 @@ class ExcelDefination:
                         column_sorted = value
                     if key.lower() in "isdesc":
                         column_isDesc = value
+                    if key.lower() in "weight":
+                        column_weight = value
 
                 self.store.append(
                     (
@@ -95,6 +108,7 @@ class ExcelDefination:
                         column_type,
                         column_sorted,
                         column_isDesc,
+                        column_weight,
                     )
                 )
 

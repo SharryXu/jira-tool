@@ -17,6 +17,7 @@ from .milestone import *
 from .priority import *
 from .sprint_schedule import *
 from .story import *
+from .story import sort_stories_by_score
 
 __all__ = [
     "read_excel_file",
@@ -84,21 +85,13 @@ def read_excel_file(
         if _should_skip(row):
             continue
 
-        story: Story = Story()
+        story: Story = Story(excel_defination_columns)
         for column_index in range(len(row)):
             column = excel_defination_columns[column_index]
-            if column[2] is str:
-                setattr(story, column[1], row[column_index].value)
-            elif column[2] is bool:
-                setattr(story, column[1], convert_to_bool(row[column_index].value))
-            elif column[2] is Priority:
-                setattr(story, column[1], convert_to_priority(row[column_index].value))
-            elif column[2] is datetime:
-                setattr(story, column[1], convert_to_datetime(row[column_index].value))
-            elif column[2] is Milestone:
-                milestone = Milestone(row[column_index].value)
-                milestone.calc_priority(sprint_schedule)
-                setattr(story, column[1], milestone)
+            story.set_value(
+                column[2], column[1], row[column_index].value, sprint_schedule
+            )
+        story.calculate_score()
         stories.append(story)
 
     wb.close()
@@ -241,6 +234,7 @@ def process_excel_file(
     )
 
     sort_stories(stories, excel_defination)
+    stories = sort_stories_by_score(stories)
     stories = sort_stories_by_override(stories)
     stories = sort_stories_by_deferred(stories)
 

@@ -6,10 +6,10 @@ from typing import Any
 
 from dateutil import parser
 
-from jira_tool.excel_defination import ExcelDefination
-
+from .excel_defination import ExcelDefination
 from .milestone import *
 from .priority import *
+from .sprint_schedule import SprintScheduleStore
 
 __all__ = [
     "Story",
@@ -48,10 +48,11 @@ def convert_to_datetime(raw: Any) -> (datetime | None):
 
 
 class Story(object):
-    def __init__(self, columns: list[tuple] = None) -> None:
+    def __init__(self, columns: list[tuple]) -> None:
         if columns is None:
-            return
-        self.attributes = columns
+            raise ValueError("Columns must be provided!")
+        self.score = 0
+        self.columns = columns
         for column in columns:
             if column[2] is str:
                 setattr(self, column[1], "")
@@ -73,14 +74,39 @@ class Story(object):
         else:
             return str(property)
 
+    def set_value(
+        self,
+        property_type: Any,
+        property_name: str,
+        property_value: Any,
+        sprint_schedule: SprintScheduleStore,
+    ):
+        if property_type is str:
+            setattr(self, property_name, property_value)
+        elif property_type is bool:
+            setattr(self, property_name, convert_to_bool(property_value))
+        elif property_type is Priority:
+            setattr(self, property_name, convert_to_priority(property_value))
+        elif property_type is datetime:
+            setattr(self, property_name, convert_to_datetime(property_value))
+        elif property_type is Milestone:
+            milestone = Milestone(property_value)
+            milestone.calc_priority(sprint_schedule)
+            setattr(self, property_name, milestone)
+
+    def calculate_score(self):
+        for _, column_name, column_type, _, _, weight in self.columns:
+            if column_type is Priority:
+                self.score += int(getattr(self, column_name)) * weight
+
     def __str__(self):
         separator = ", "
-        if self.attributes is None:
+        if self.columns is None:
             return ""
         else:
             result = ""
-            for attribute in self.attributes:
-                result += f"{str(getattr(self, attribute))}{separator}"
+            for _, column_name, _, _, _, _ in self.columns:
+                result += f"{str(getattr(self, column_name))}{separator}"
             return result
 
 
@@ -106,6 +132,10 @@ def sort_stories_by_deferred(stories: list[Story]) -> list[Story]:
 
 def sort_stories_by_override(stories: list[Story]) -> list[Story]:
     return _raise_story_priority(stories, "override")
+
+
+def sort_stories_by_score(stories: list[Story], reverse: bool = True) -> list[Story]:
+    return stories.sort(key=lambda s: s.score, reverse=reverse)
 
 
 """
