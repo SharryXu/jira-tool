@@ -5,7 +5,7 @@
         "Type": "datetime",
         "Sorted": false,
         "IsDesc": false,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 2,
@@ -13,7 +13,7 @@
         "Type": "str",
         "Sorted": false,
         "IsDesc": false,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 3,
@@ -21,7 +21,7 @@
         "Type": "str",
         "Sorted": false,
         "IsDesc": false,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 4,
@@ -29,7 +29,7 @@
         "Type": "str",
         "Sorted": false,
         "IsDesc": false,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 5,
@@ -37,7 +37,7 @@
         "Type": "Milestone",
         "Sorted": true,
         "IsDesc": false,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 6,
@@ -45,7 +45,7 @@
         "Type": "bool",
         "Sorted": true,
         "IsDesc": true,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 7,
@@ -53,7 +53,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 8
+        "Priority": 8
     },
     {
         "Index": 8,
@@ -61,7 +61,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 7
+        "Priority": 7
     },
     {
         "Index": 9,
@@ -69,7 +69,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 6
+        "Priority": 6
     },
     {
         "Index": 10,
@@ -77,7 +77,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 5
+        "Priority": 5
     },
     {
         "Index": 11,
@@ -85,7 +85,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 4
+        "Priority": 4
     },
     {
         "Index": 12,
@@ -93,7 +93,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 3
+        "Priority": 3
     },
     {
         "Index": 13,
@@ -101,7 +101,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 2
+        "Priority": 2
     },
     {
         "Index": 14,
@@ -109,7 +109,7 @@
         "Type": "Priority",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 1
+        "Priority": 1
     },
     {
         "Index": 15,
@@ -117,7 +117,7 @@
         "Type": "bool",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 16,
@@ -125,20 +125,22 @@
         "Type": "datetime",
         "Sorted": false,
         "IsDesc": true,
-        "Weight": 0
+        "Priority": 0
     },
     {
         "Index": 17,
         "Name": "deferred",
         "Type": "bool",
         "Sorted": false,
-        "IsDesc": true
+        "IsDesc": true,
+        "Priority": 0
     },
     {
         "Index": 18,
         "Name": "override",
         "Type": "bool",
         "Sorted": false,
-        "IsDesc": true
+        "IsDesc": true,
+        "Priority": 0
     }
 ]

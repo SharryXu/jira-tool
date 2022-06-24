@@ -1,3 +1,4 @@
+import math
 import re
 from datetime import datetime
 from decimal import *
@@ -51,7 +52,6 @@ class Story(object):
     def __init__(self, columns: list[tuple]) -> None:
         if columns is None:
             raise ValueError("Columns must be provided!")
-        self.score = 0
         self.columns = columns
         for column in columns:
             if column[2] is str:
@@ -94,11 +94,6 @@ class Story(object):
             milestone.calc_priority(sprint_schedule)
             setattr(self, property_name, milestone)
 
-    def calculate_score(self):
-        for _, column_name, column_type, _, _, weight in self.columns:
-            if column_type is Priority:
-                self.score += int(getattr(self, column_name)) * weight
-
     def __str__(self):
         separator = ", "
         if self.columns is None:
@@ -134,8 +129,7 @@ def sort_stories_by_override(stories: list[Story]) -> list[Story]:
     return _raise_story_priority(stories, "override")
 
 
-def sort_stories_by_score(stories: list[Story], reverse: bool = True) -> list[Story]:
-    stories.sort(key=lambda s: s.score, reverse=reverse)
+def sort_stories_by_priority(stories: list[Story], reverse: bool = True) -> list[Story]:
     return stories
 
 
