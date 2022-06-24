@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+"""
+This module is used to store excel column defination information.
+"""
 import json
 import pathlib
 from datetime import datetime
@@ -13,8 +17,16 @@ class ExcelDefination:
         self.store: list[tuple] = []
 
     def load(self, content: str):
+        """
+        Load json string to generate the excel defination
+
+        :param content:
+            JSON string content
+        """
+
         if content is None:
-            return
+            raise ValueError("The content is invalid")
+
         raw_data = json.loads(content)
 
         for item in raw_data:
@@ -23,6 +35,7 @@ class ExcelDefination:
             column_type = None
             column_sorted = False
             column_isDesc = False
+            column_weight = 0
 
             for key, value in item.items():
                 if key.lower() in "index":
@@ -35,15 +48,35 @@ class ExcelDefination:
                     column_sorted = value
                 if key.lower() in "isdesc":
                     column_isDesc = value
+                if key.lower() in "weight":
+                    column_weight = value
 
             self.store.append(
-                (column_index, column_name, column_type, column_sorted, column_isDesc)
+                (
+                    column_index,
+                    column_name,
+                    column_type,
+                    column_sorted,
+                    column_isDesc,
+                    column_weight,
+                )
             )
 
-    def load_file(self, file_path: str):
-        if file_path is None or not pathlib.Path(file_path).is_file():
-            return
-        with open(file=file_path, mode="r") as table_defination_file:
+    def load_file(self, file: str):
+        """
+        Load json file to generate the excel defination
+
+        :param file:
+            JSON file location
+        """
+
+        if file is None or not pathlib.Path(file).is_absolute():
+            raise ValueError("The file is invalid.")
+
+        if not pathlib.Path(file).exists():
+            raise ValueError(f"The file is not exist. File: {file}")
+
+        with open(file=file, mode="r") as table_defination_file:
             raw_data = json.load(table_defination_file)
 
             for item in raw_data:
@@ -52,6 +85,7 @@ class ExcelDefination:
                 column_type = None
                 column_sorted = False
                 column_isDesc = False
+                column_weight = 0
 
                 for key, value in item.items():
                     if key.lower() in "index":
@@ -64,6 +98,8 @@ class ExcelDefination:
                         column_sorted = value
                     if key.lower() in "isdesc":
                         column_isDesc = value
+                    if key.lower() in "weight":
+                        column_weight = value
 
                 self.store.append(
                     (
@@ -72,6 +108,7 @@ class ExcelDefination:
                         column_type,
                         column_sorted,
                         column_isDesc,
+                        column_weight,
                     )
                 )
 

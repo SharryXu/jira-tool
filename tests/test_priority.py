@@ -1,7 +1,8 @@
-from jira_tool.story import *
 from jira_tool.priority import *
+from jira_tool.story import *
 
-class TestPriority():
+
+class TestPriority:
     def test_compare_priority(self):
         p1: Priority = Priority.CRITICAL
         p2: Priority = Priority.HIGH
@@ -23,5 +24,5 @@ class TestPriority():
     def test_priority_to_str(self):
         p1: Priority = Priority.CRITICAL
         p2: Priority = Priority.NA
-        assert str(p1) == 'Critical'
-        assert str(p2) == 'N/A'
+        assert str(p1) == "Critical"
+        assert str(p2) == "N/A"

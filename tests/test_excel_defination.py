@@ -1,5 +1,7 @@
 import pathlib
 
+import pytest
+
 from jira_tool.excel_defination import *
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -16,8 +18,9 @@ class TestExcelDefination:
 
     def test_load_using_none_input(self):
         store = ExcelDefination()
-        store.load(None) == "Whh"
-        assert store.total_count() == 0
+        with pytest.raises(ValueError) as err:
+            store.load(None)
+        assert "invalid" in str(err.value)
 
     def test_load_file(self):
         excel_defination_filename = HERE / "files/excel_defination.json"
@@ -27,8 +30,9 @@ class TestExcelDefination:
 
     def test_load_file_none(self):
         store = ExcelDefination()
-        store.load_file(None)
-        assert store.total_count() == 0
+        with pytest.raises(ValueError) as err:
+            store.load_file(None)
+        assert "invalid" in str(err.value)
 
     def test_iter(self):
         excel_defination_filename = HERE / "files/excel_defination.json"
