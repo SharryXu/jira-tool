@@ -18,4 +18,4 @@ class TestExcelOperation:
             HERE / "files/happy_path.xlsx", excel_defination, sprint_schedule
         )
         assert len(columns) == 18
-        assert len(stories) == 2
+        assert len(stories) == 5

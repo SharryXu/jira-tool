@@ -14,6 +14,7 @@ from .sprint_schedule import SprintScheduleStore
 
 __all__ = [
     "Story",
+    "StoryFactory",
     "convert_to_bool",
     "convert_to_datetime",
     "convert_to_decimal",
@@ -49,11 +50,12 @@ def convert_to_datetime(raw: Any) -> (datetime | None):
 
 
 class Story(object):
-    def __init__(self, columns: list[tuple]) -> None:
+    def __init__(self, columns: list[tuple], compare_rules: list[tuple]) -> None:
         if columns is None:
             raise ValueError("Columns must be provided!")
+        self.compare_rules = compare_rules
         self.columns = columns
-        for column in columns:
+        for column in self.columns:
             if column[2] is str:
                 setattr(self, column[1], "")
             elif column[2] is bool:
@@ -63,6 +65,8 @@ class Story(object):
             elif column[2] is Milestone:
                 setattr(self, column[1], None)
             elif column[2] is datetime:
+                setattr(self, column[1], None)
+            else:
                 setattr(self, column[1], None)
 
     def get_value(self, property_name: str) -> str:
@@ -74,13 +78,10 @@ class Story(object):
         else:
             return str(property)
 
-    def set_value(
-        self,
-        property_type: Any,
-        property_name: str,
-        property_value: Any,
-        sprint_schedule: SprintScheduleStore,
-    ):
+    def __getitem__(self, property_name):
+        return self.get_value(property_name)
+
+    def set_value(self, property_type: Any, property_name: str, property_value: Any):
         if property_type is str:
             setattr(self, property_name, property_value)
         elif property_type is bool:
@@ -91,8 +92,38 @@ class Story(object):
             setattr(self, property_name, convert_to_datetime(property_value))
         elif property_type is Milestone:
             milestone = Milestone(property_value)
-            milestone.calc_priority(sprint_schedule)
             setattr(self, property_name, milestone)
+        else:
+            setattr(self, property_name, property_value)
+
+    def __setitem__(self, property_name, property_value):
+        if type(property_value) is str:
+            self.set_value(str, property_name, property_value)
+        elif type(property_value) is str:
+            self.set_value(str, property_name, property_value)
+        elif type(property_value) is str:
+            self.set_value(str, property_name, property_value)
+        elif type(property_value) is str:
+            self.set_value(str, property_name, property_value)
+        elif type(property_value) is str:
+            self.set_value(str, property_name, property_value)
+        else:
+            self.set_value(type(property_value), property_name, property_value)
+
+    def __lt__(self, __o: object) -> bool:
+        return compare_story(self, __o) < 0
+
+    def __le__(self, __o: object) -> bool:
+        return compare_story(self, __o) <= 0
+
+    def __gt__(self, __o: object) -> bool:
+        return compare_story(self, __o) > 0
+
+    def __ge__(self, __o: object) -> bool:
+        return compare_story(self, __o) >= 0
+
+    def __eq__(self, __o: object) -> bool:
+        return compare_story(self, __o) == 0
 
     def __str__(self):
         separator = ", "
@@ -101,8 +132,60 @@ class Story(object):
         else:
             result = ""
             for _, column_name, _, _, _, _ in self.columns:
-                result += f"{str(getattr(self, column_name))}{separator}"
+                if hasattr(self, column_name):
+                    result += f"{str(getattr(self, column_name))}{separator}"
             return result
+
+
+class StoryFactory(object):
+    def __init__(self, columns: list[tuple]) -> None:
+        if columns is None:
+            raise ValueError("Columns must be provided!")
+        self.columns = columns
+        self.compare_rules = self.__generate_compare_rules()
+
+    def __generate_compare_rules(self) -> list[tuple]:
+        compare_rules = []
+        for _, column_name, _, _, _, priority in self.columns:
+            if priority > 0:
+                compare_rules.append((column_name, priority))
+        compare_rules.sort(key=lambda r: r[1], reverse=True)
+        return compare_rules
+
+    def create_story(self) -> Story:
+        return Story(self.columns, self.compare_rules)
+
+
+def compare_story(a: Story, b: Story) -> int:
+    """
+    Compare two stories.
+
+    :parm a:
+        First story
+    :parm b:
+        Second story
+    :parm sort_rule:
+        Priority information
+    :return
+        1: means a > b
+        0: means a == b
+        -1: means a < b
+    """
+    if (
+        a.compare_rules is None
+        or b.compare_rules is None
+        or a.compare_rules != b.compare_rules
+    ):
+        raise ValueError("The compare rules is invalid.")
+
+    for name, _ in a.compare_rules:
+        if a[name] > b[name]:
+            return 1
+        elif a[name] < b[name]:
+            return -1
+        else:
+            continue
+    return 0
 
 
 def sort_stories(stories: list[Story], excel_defination: ExcelDefination):
@@ -121,16 +204,37 @@ def _internal_sort_stories(stories: list[Story], keys: list[tuple]):
         stories.sort(key=attrgetter(key), reverse=isReversed)
 
 
+"""
+def sort_stories_by_priority(
+    stories: list[Story], excel_defination: ExcelDefination
+) -> list[Story]:
+    sort_rule = []
+    excel_defination_columns = excel_defination.get_columns()
+
+    for _, column_name, _, _, _, priority in excel_defination_columns:
+        if priority > 0:
+            sort_rule.append((column_name, priority))
+    sort_rule.sort(key=lambda r: r[1], reverse=True)
+
+    result = []
+    while len(stories) > 0:
+        tmp = []
+        for priority in Priority:
+            for name, sort_priority in sort_rule:
+                for story in stories:
+                    # if story[name]
+                    continue
+
+    return result
+"""
+
+
 def sort_stories_by_deferred(stories: list[Story]) -> list[Story]:
     return _raise_story_priority(stories, "deferred")
 
 
 def sort_stories_by_override(stories: list[Story]) -> list[Story]:
     return _raise_story_priority(stories, "override")
-
-
-def sort_stories_by_priority(stories: list[Story], reverse: bool = True) -> list[Story]:
-    return stories
 
 
 """

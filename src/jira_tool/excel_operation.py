@@ -17,7 +17,6 @@ from .milestone import *
 from .priority import *
 from .sprint_schedule import *
 from .story import *
-from .story import sort_stories_by_priority
 
 __all__ = [
     "read_excel_file",
@@ -80,17 +79,18 @@ def read_excel_file(
     stories = []
 
     excel_defination_columns = excel_defination.get_columns()
+    storyFactory = StoryFactory(excel_defination_columns)
 
     for row in rows:
         if _should_skip(row):
             continue
 
-        story: Story = Story(excel_defination_columns)
+        story: Story = storyFactory.create_story()
         for column_index in range(len(row)):
             column = excel_defination_columns[column_index]
-            story.set_value(
-                column[2], column[1], row[column_index].value, sprint_schedule
-            )
+            story.set_value(column[2], column[1], row[column_index].value)
+            if column[1] is Milestone:
+                story[column[2]].calc_priority(sprint_schedule)
         stories.append(story)
 
     wb.close()
@@ -232,7 +232,7 @@ def process_excel_file(
         input_file, excel_defination, sprint_schedule
     )
 
-    stories = sort_stories_by_priority(stories)
+    stories = sorted(stories, reverse=True)
     sort_stories(stories, excel_defination)
     stories = sort_stories_by_override(stories)
     stories = sort_stories_by_deferred(stories)

@@ -15,6 +15,7 @@ from .priority import Priority
 from .sprint_schedule import SprintScheduleStore
 from .story import (
     Story,
+    StoryFactory,
     sort_stories,
     sort_stories_by_deferred,
     sort_stories_by_override,
@@ -32,6 +33,7 @@ __all__ = [
     "Priority",
     "SprintScheduleStore",
     "Story",
+    "StoryFactory",
     "sort_stories",
     "sort_stories_by_deferred",
     "sort_stories_by_override",
