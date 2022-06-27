@@ -233,9 +233,9 @@ def process_excel_file(
     )
 
     stories = sorted(stories, reverse=True)
-    sort_stories(stories, excel_defination)
-    stories = raise_story_sequence_by_property(stories, "override")
-    stories = raise_story_sequence_by_property(stories, "deferred")
+    # sort_stories(stories, excel_defination)
+    # stories = raise_story_sequence_by_property(stories, "override")
+    # stories = raise_story_sequence_by_property(stories, "deferred")
 
     output_to_excel_file(
         output_file, stories, excel_defination, excel_columns, over_write

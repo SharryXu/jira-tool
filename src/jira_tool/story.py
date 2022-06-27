@@ -172,13 +172,61 @@ def compare_story(a: Story, b: Story) -> int:
     ):
         raise ValueError("The compare rules is invalid.")
 
-    for name, _ in a.compare_rules:
-        if a[name] > b[name]:
+    if len(a.compare_rules) == 0:
+        return 0
+
+    skip_index_of_a = []
+    skip_index_of_b = []
+    count = len(a.compare_rules)
+    while count >= 0:
+        highest_property_of_a = None
+        highest_property_of_b = None
+        for i in range(len(a.compare_rules)):
+            if highest_property_of_a is None:
+                # property_value, property_location
+                highest_property_of_a = (a[a.compare_rules[i][0]], i)
+
+            if highest_property_of_b is None:
+                highest_property_of_b = (b[a.compare_rules[i][0]], i)
+
+            if (
+                a[a.compare_rules[i][0]] > highest_property_of_a[0]
+                and i not in skip_index_of_a
+            ):
+                highest_property_of_a = (a[a.compare_rules[i][0]], i)
+            if (
+                b[a.compare_rules[i][0]] > highest_property_of_b[0]
+                and i not in skip_index_of_b
+            ):
+                highest_property_of_b = (b[a.compare_rules[i][0]], i)
+
+        skip_index_of_a.append(highest_property_of_a[1])
+        skip_index_of_b.append(highest_property_of_b[1])
+
+        # priority value
+        if highest_property_of_a[0] > highest_property_of_b[0]:
             return 1
-        elif a[name] < b[name]:
-            return -1
+        elif highest_property_of_a[0] == highest_property_of_b[0]:
+            if highest_property_of_a[1] > highest_property_of_b[1]:
+                return 1
+            elif highest_property_of_a[1] < highest_property_of_b[1]:
+                return -1
         else:
-            continue
+            return -1
+
+        # property location
+        if highest_property_of_a[1] > highest_property_of_b[1]:
+            return 1
+        elif highest_property_of_a[1] == highest_property_of_b[1]:
+            if highest_property_of_a[0] > highest_property_of_b[0]:
+                return 1
+            elif highest_property_of_a[0] < highest_property_of_b[0]:
+                return -1
+        else:
+            return -1
+
+        count -= 1
+        continue
     return 0
 
 

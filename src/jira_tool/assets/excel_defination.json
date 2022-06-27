@@ -44,7 +44,7 @@
         "Name": "criticalDefect",
         "Type": "bool",
         "Sorted": true,
-        "IsDesc": true,
+        "IsDesc": false,
         "Priority": 0
     },
     {
