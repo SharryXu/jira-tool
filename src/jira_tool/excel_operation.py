@@ -178,7 +178,7 @@ def output_to_excel_file(
     for row_index in range(len(stories)):
         for column_index, column_name, _, _, _, _ in excel_defination_columns:
             cell = sheet.cell(row=row_index + 2, column=column_index)
-            cell.value = stories[row_index].get_value(column_name)
+            cell.value = stories[row_index].format_value(column_name)
 
     wb.save(file)
     wb.close()
@@ -234,8 +234,8 @@ def process_excel_file(
 
     stories = sorted(stories, reverse=True)
     sort_stories(stories, excel_defination)
-    stories = sort_stories_by_override(stories)
-    stories = sort_stories_by_deferred(stories)
+    stories = raise_story_sequence_by_property(stories, "override")
+    stories = raise_story_sequence_by_property(stories, "deferred")
 
     output_to_excel_file(
         output_file, stories, excel_defination, excel_columns, over_write

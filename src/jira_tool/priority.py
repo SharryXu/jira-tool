@@ -77,6 +77,8 @@ class Priority(IntEnum):
 
 
 def convert_to_priority(raw: Any) -> Priority:
+    if type(raw) is Priority:
+        return raw
     raw = str(raw).strip().upper()
     if raw == "N/A":
         return Priority.NA

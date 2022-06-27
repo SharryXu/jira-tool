@@ -19,12 +19,13 @@ __all__ = [
     "convert_to_datetime",
     "convert_to_decimal",
     "sort_stories",
-    "sort_stories_by_deferred",
-    "sort_stories_by_override",
+    "raise_story_sequence_by_property",
 ]
 
 
 def convert_to_bool(raw: Any) -> bool:
+    if type(raw) is bool:
+        return raw
     raw = str(raw).strip().upper()
     if raw == "YES":
         return True
@@ -33,6 +34,8 @@ def convert_to_bool(raw: Any) -> bool:
 
 
 def convert_to_decimal(raw: Any) -> Decimal:
+    if type(raw) is Decimal:
+        return raw
     raw = str(raw).strip()
     pattern = re.compile("[0-9.]{1,10}")
     result = pattern.search(raw)
@@ -43,6 +46,8 @@ def convert_to_decimal(raw: Any) -> Decimal:
 
 
 def convert_to_datetime(raw: Any) -> (datetime | None):
+    if type(raw) is datetime:
+        return raw
     if raw is None:
         return
     raw = str(raw).strip()
@@ -69,7 +74,10 @@ class Story(object):
             else:
                 setattr(self, column[1], None)
 
-    def get_value(self, property_name: str) -> str:
+    def __getitem__(self, property_name):
+        return getattr(self, property_name)
+
+    def format_value(self, property_name: str) -> str:
         property = getattr(self, property_name, None)
         if property is None:
             return ""
@@ -77,9 +85,6 @@ class Story(object):
             return property.date().isoformat()
         else:
             return str(property)
-
-    def __getitem__(self, property_name):
-        return self.get_value(property_name)
 
     def set_value(self, property_type: Any, property_name: str, property_value: Any):
         if property_type is str:
@@ -97,18 +102,7 @@ class Story(object):
             setattr(self, property_name, property_value)
 
     def __setitem__(self, property_name, property_value):
-        if type(property_value) is str:
-            self.set_value(str, property_name, property_value)
-        elif type(property_value) is str:
-            self.set_value(str, property_name, property_value)
-        elif type(property_value) is str:
-            self.set_value(str, property_name, property_value)
-        elif type(property_value) is str:
-            self.set_value(str, property_name, property_value)
-        elif type(property_value) is str:
-            self.set_value(str, property_name, property_value)
-        else:
-            self.set_value(type(property_value), property_name, property_value)
+        self.set_value(type(property_value), property_name, property_value)
 
     def __lt__(self, __o: object) -> bool:
         return compare_story(self, __o) < 0
@@ -229,32 +223,25 @@ def sort_stories_by_priority(
 """
 
 
-def sort_stories_by_deferred(stories: list[Story]) -> list[Story]:
-    return _raise_story_priority(stories, "deferred")
-
-
-def sort_stories_by_override(stories: list[Story]) -> list[Story]:
-    return _raise_story_priority(stories, "override")
-
-
-"""
-Only bool indicator for now
-"""
-
-
-def _raise_story_priority(stories: list[Story], attribute_name: str) -> list[Story]:
+def raise_story_sequence_by_property(
+    stories: list[Story], property_name: str
+) -> list[Story]:
     if stories is None or len(stories) == 0:
         return
-    if not hasattr(stories[0], attribute_name):
+    # Use first story as example
+    if not hasattr(stories[0], property_name):
+        return
+    # Only bool indicator for now
+    if type(getattr(stories[0], property_name)) is not bool:
         return
     result = [None] * len(stories)
     j = 0
     for i in range(len(stories)):
-        if getattr(stories[i], attribute_name) is True:
+        if getattr(stories[i], property_name) is True:
             result[j] = stories[i]
             j += 1
     for i in range(len(stories)):
-        if getattr(stories[i], attribute_name) is False:
+        if getattr(stories[i], property_name) is False:
             result[j] = stories[i]
             j += 1
     return result
