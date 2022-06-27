@@ -36,7 +36,7 @@
         "Name": "milestone",
         "Type": "Milestone",
         "Sorted": true,
-        "IsDesc": false,
+        "IsDesc": true,
         "Priority": 0
     },
     {
@@ -44,7 +44,7 @@
         "Name": "criticalDefect",
         "Type": "bool",
         "Sorted": true,
-        "IsDesc": false,
+        "IsDesc": true,
         "Priority": 0
     },
     {
