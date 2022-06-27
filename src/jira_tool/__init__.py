@@ -13,12 +13,7 @@ from .excel_operation import (
 from .milestone import Milestone
 from .priority import Priority
 from .sprint_schedule import SprintScheduleStore
-from .story import (
-    Story,
-    sort_stories,
-    sort_stories_by_deferred,
-    sort_stories_by_override,
-)
+from .story import Story, StoryFactory, raise_story_sequence_by_property, sort_stories
 
 __version__ = metadata.version("sharry_jira_tool")
 
@@ -32,9 +27,9 @@ __all__ = [
     "Priority",
     "SprintScheduleStore",
     "Story",
+    "StoryFactory",
     "sort_stories",
-    "sort_stories_by_deferred",
-    "sort_stories_by_override",
+    "raise_story_sequence_by_property",
 ]
 
 del metadata

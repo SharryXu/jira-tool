@@ -17,7 +17,6 @@ from .milestone import *
 from .priority import *
 from .sprint_schedule import *
 from .story import *
-from .story import sort_stories_by_score
 
 __all__ = [
     "read_excel_file",
@@ -80,18 +79,18 @@ def read_excel_file(
     stories = []
 
     excel_defination_columns = excel_defination.get_columns()
+    storyFactory = StoryFactory(excel_defination_columns)
 
     for row in rows:
         if _should_skip(row):
             continue
 
-        story: Story = Story(excel_defination_columns)
+        story: Story = storyFactory.create_story()
         for column_index in range(len(row)):
             column = excel_defination_columns[column_index]
-            story.set_value(
-                column[2], column[1], row[column_index].value, sprint_schedule
-            )
-        story.calculate_score()
+            story.set_value(column[2], column[1], row[column_index].value)
+            if column[1] is Milestone:
+                story[column[2]].calc_priority(sprint_schedule)
         stories.append(story)
 
     wb.close()
@@ -179,7 +178,7 @@ def output_to_excel_file(
     for row_index in range(len(stories)):
         for column_index, column_name, _, _, _, _ in excel_defination_columns:
             cell = sheet.cell(row=row_index + 2, column=column_index)
-            cell.value = stories[row_index].get_value(column_name)
+            cell.value = stories[row_index].format_value(column_name)
 
     wb.save(file)
     wb.close()
@@ -233,10 +232,10 @@ def process_excel_file(
         input_file, excel_defination, sprint_schedule
     )
 
+    stories = sorted(stories, reverse=True)
     sort_stories(stories, excel_defination)
-    stories = sort_stories_by_score(stories)
-    stories = sort_stories_by_override(stories)
-    stories = sort_stories_by_deferred(stories)
+    stories = raise_story_sequence_by_property(stories, "override")
+    stories = raise_story_sequence_by_property(stories, "deferred")
 
     output_to_excel_file(
         output_file, stories, excel_defination, excel_columns, over_write
