@@ -207,9 +207,9 @@ def compare_story(a: Story, b: Story) -> int:
         if highest_property_of_a[0] > highest_property_of_b[0]:
             return 1
         elif highest_property_of_a[0] == highest_property_of_b[0]:
-            if highest_property_of_a[1] > highest_property_of_b[1]:
+            if highest_property_of_a[1] < highest_property_of_b[1]:
                 return 1
-            elif highest_property_of_a[1] < highest_property_of_b[1]:
+            elif highest_property_of_a[1] > highest_property_of_b[1]:
                 return -1
         else:
             return -1
