@@ -195,10 +195,10 @@ def process_excel_file(
     Sort the excel file and output the result
 
     :parm input_file:
-        The excel file need to be sorted
+        The excel file need to be sorted. (Absolute path only)
 
     :parm output_file:
-        The sorted excel file location
+        The sorted excel file location. (Absolute path only)
 
     :parm sprint_schedule_config:
         The JSON file which contains the priority list to calculate the :py:class:`Milestone`
