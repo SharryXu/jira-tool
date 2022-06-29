@@ -38,10 +38,10 @@ Quick example
 =============
 Here's a simple program, just to give you an idea about how to use this package.
 
-    >>> import pathlib
-    >>> from jira_tool import process_excel_file
-    >>> HERE = pathlib.Path().resolve()
-    >>> process_excel_file(HERE / "source.xlsx", HERE / "target.xlsx")
+>>> import pathlib
+>>> from jira_tool import process_excel_file
+>>> HERE = pathlib.Path().resolve()
+>>> process_excel_file(HERE / "source.xlsx", HERE / "target.xlsx")
 
 Author
 ======
@@ -53,3 +53,7 @@ Starting with version 0.1.13, the main function of this project has been totally
 Contact
 =======
 Our mailing list is available at `sharry.xu@outlook.com`.
+
+License
+=======
+All contributions after December 1, 2022 released under MIT license.
