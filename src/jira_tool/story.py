@@ -1,4 +1,3 @@
-import math
 import re
 from datetime import datetime
 from decimal import *
@@ -182,22 +181,24 @@ def compare_story(a: Story, b: Story) -> int:
         highest_property_of_a = None
         highest_property_of_b = None
         for i in range(len(a.compare_rules)):
+            if i in skip_index_of_a:
+                continue
+
             if highest_property_of_a is None:
                 # property_value, property_location
                 highest_property_of_a = (a[a.compare_rules[i][0]], i)
 
+            if a[a.compare_rules[i][0]] > highest_property_of_a[0]:
+                highest_property_of_a = (a[a.compare_rules[i][0]], i)
+
+        for i in range(len(a.compare_rules)):
+            if i in skip_index_of_b:
+                continue
+
             if highest_property_of_b is None:
                 highest_property_of_b = (b[a.compare_rules[i][0]], i)
 
-            if (
-                a[a.compare_rules[i][0]] > highest_property_of_a[0]
-                and i not in skip_index_of_a
-            ):
-                highest_property_of_a = (a[a.compare_rules[i][0]], i)
-            if (
-                b[a.compare_rules[i][0]] > highest_property_of_b[0]
-                and i not in skip_index_of_b
-            ):
+            if b[a.compare_rules[i][0]] > highest_property_of_b[0]:
                 highest_property_of_b = (b[a.compare_rules[i][0]], i)
 
         skip_index_of_a.append(highest_property_of_a[1])
@@ -244,31 +245,6 @@ def sort_stories(stories: list[Story], excel_defination: ExcelDefination):
 def _internal_sort_stories(stories: list[Story], keys: list[tuple]):
     for key, isReversed in reversed(keys):
         stories.sort(key=attrgetter(key), reverse=isReversed)
-
-
-"""
-def sort_stories_by_priority(
-    stories: list[Story], excel_defination: ExcelDefination
-) -> list[Story]:
-    sort_rule = []
-    excel_defination_columns = excel_defination.get_columns()
-
-    for _, column_name, _, _, _, priority in excel_defination_columns:
-        if priority > 0:
-            sort_rule.append((column_name, priority))
-    sort_rule.sort(key=lambda r: r[1], reverse=True)
-
-    result = []
-    while len(stories) > 0:
-        tmp = []
-        for priority in Priority:
-            for name, sort_priority in sort_rule:
-                for story in stories:
-                    # if story[name]
-                    continue
-
-    return result
-"""
 
 
 def raise_story_sequence_by_property(
