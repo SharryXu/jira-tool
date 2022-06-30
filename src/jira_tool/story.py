@@ -177,7 +177,7 @@ def compare_story(a: Story, b: Story) -> int:
     skip_index_of_a = []
     skip_index_of_b = []
     count = len(a.compare_rules)
-    while count >= 0:
+    while count > 0:
         highest_property_of_a = None
         highest_property_of_b = None
         for i in range(len(a.compare_rules)):
