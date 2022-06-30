@@ -50,7 +50,39 @@ def mock_data() -> list:
     s5["productValue"] = Priority.HIGH
     s5["marketingUrgency"] = Priority.NA
 
-    return [s1, s2, s3, s4, s5]
+    # Critical, N/A, Middle, N/A
+    s6 = storyFactory.create_story()
+    s6["name"] = "s6"
+    s6["regulatory"] = Priority.CRITICAL
+    s6["partnerPriority"] = Priority.NA
+    s6["productValue"] = Priority.MIDDLE
+    s6["marketingUrgency"] = Priority.NA
+
+    # Critical, N/A, High, Low
+    s7 = storyFactory.create_story()
+    s7["name"] = "s7"
+    s7["regulatory"] = Priority.CRITICAL
+    s7["partnerPriority"] = Priority.NA
+    s7["productValue"] = Priority.HIGH
+    s7["marketingUrgency"] = Priority.LOW
+
+    # Critical, Low, Middle, N/A
+    s8 = storyFactory.create_story()
+    s8["name"] = "s8"
+    s8["regulatory"] = Priority.CRITICAL
+    s8["partnerPriority"] = Priority.LOW
+    s8["productValue"] = Priority.MIDDLE
+    s8["marketingUrgency"] = Priority.NA
+
+    # Critical, Middle, High, Middle
+    s9 = storyFactory.create_story()
+    s9["name"] = "s9"
+    s9["regulatory"] = Priority.CRITICAL
+    s9["partnerPriority"] = Priority.MIDDLE
+    s9["productValue"] = Priority.HIGH
+    s9["marketingUrgency"] = Priority.MIDDLE
+
+    return [s1, s2, s3, s4, s5, s6, s7, s8, s9]
 
 
 class TestStory:
@@ -61,6 +93,10 @@ class TestStory:
         s3 = data[2]
         s4 = data[3]
         s5 = data[4]
+        s6 = data[5]
+        s7 = data[6]
+        s8 = data[7]
+        s9 = data[8]
         assert s1 < s2
         assert s1 < s3
         assert s2 < s3
@@ -68,6 +104,8 @@ class TestStory:
         assert s2 < s5
         assert s4 < s5
         assert s1 < s5
+        assert s6 < s7
+        assert s8 < s9
 
     def test_sort_stories(self):
         data = mock_data()

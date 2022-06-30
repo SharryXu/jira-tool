@@ -181,22 +181,24 @@ def compare_story(a: Story, b: Story) -> int:
         highest_property_of_a = None
         highest_property_of_b = None
         for i in range(len(a.compare_rules)):
+            if i in skip_index_of_a:
+                continue
+
             if highest_property_of_a is None:
                 # property_value, property_location
                 highest_property_of_a = (a[a.compare_rules[i][0]], i)
 
+            if a[a.compare_rules[i][0]] > highest_property_of_a[0]:
+                highest_property_of_a = (a[a.compare_rules[i][0]], i)
+
+        for i in range(len(a.compare_rules)):
+            if i in skip_index_of_b:
+                continue
+
             if highest_property_of_b is None:
                 highest_property_of_b = (b[a.compare_rules[i][0]], i)
 
-            if (
-                a[a.compare_rules[i][0]] > highest_property_of_a[0]
-                and i not in skip_index_of_a
-            ):
-                highest_property_of_a = (a[a.compare_rules[i][0]], i)
-            if (
-                b[a.compare_rules[i][0]] > highest_property_of_b[0]
-                and i not in skip_index_of_b
-            ):
+            if b[a.compare_rules[i][0]] > highest_property_of_b[0]:
                 highest_property_of_b = (b[a.compare_rules[i][0]], i)
 
         skip_index_of_a.append(highest_property_of_a[1])
