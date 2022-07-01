@@ -8,7 +8,11 @@ import pathlib
 import warnings
 from datetime import datetime
 from decimal import *
-from importlib.resources import files
+
+try:
+    from importlib.resources import files
+except ImportError:
+    from importlib_resources import files
 
 import openpyxl
 

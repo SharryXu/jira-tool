@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging.config
-from importlib import metadata
-from importlib.resources import files
+
+try:
+    from importlib import metadata
+    from importlib.resources import files
+except ImportError:
+    from importlib_metadata import metadata
+    from importlib_resources import files
 
 from .excel_defination import ExcelDefination
 from .excel_operation import (
