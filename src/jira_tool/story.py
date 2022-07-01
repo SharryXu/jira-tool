@@ -44,7 +44,7 @@ def convert_to_decimal(raw: Any) -> Decimal:
         return Decimal(0)
 
 
-def convert_to_datetime(raw: Any) -> (datetime | None):
+def convert_to_datetime(raw: Any) -> datetime:
     if type(raw) is datetime:
         return raw
     if raw is None:
