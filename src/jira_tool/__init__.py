@@ -2,7 +2,8 @@
 import logging.config
 
 try:
-    from importlib import metadata, version
+    from importlib import metadata
+    from importlib.metadata import version
     from importlib.resources import files
 
 except ImportError:
