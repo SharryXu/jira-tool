@@ -3,9 +3,11 @@ import logging.config
 
 try:
     from importlib import metadata
+    from importlib.metadata import version
     from importlib.resources import files
+
 except ImportError:
-    from importlib_metadata import metadata
+    from importlib_metadata import metadata, version
     from importlib_resources import files
 
 from .excel_defination import ExcelDefination
@@ -20,7 +22,7 @@ from .priority import Priority
 from .sprint_schedule import SprintScheduleStore
 from .story import Story, StoryFactory, raise_story_sequence_by_property, sort_stories
 
-__version__ = metadata.version("sharry_jira_tool")
+__version__ = version("sharry_jira_tool")
 
 __all__ = [
     "ExcelDefination",

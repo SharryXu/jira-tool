@@ -1,15 +1,19 @@
 Jira Tool - userful tool to sort jira stories
 =============================================
 
-|pypi| |github|
+|pypi| |python 3.7| |python 3.10|
 
 .. |PyPI| image:: https://img.shields.io/pypi/v/sharry-jira-tool.svg?style=flat-square
     :target https://pypi.org/project/sharry-jira-tool/
     :alt: pypi version
 
-.. |github| image:: https://github.com/SharryXu/jira-tool/actions/workflows/python-app.yml/badge.svg
-    :target: https://github.com/SharryXu/jira-tool/actions/workflows/python-app.yml
-    :alt: github action
+.. |python 3.7| image:: https://github.com/SharryXu/jira-tool/actions/workflows/python-3-7-test.yml/badge.svg
+    :target: https://github.com/SharryXu/jira-tool/actions/workflows/python-3-7-test.yml
+    :alt: python 3.7
+
+.. |python 3.10| image:: https://github.com/SharryXu/jira-tool/actions/workflows/python-3-10-test.yml/badge.svg
+    :target: https://github.com/SharryXu/jira-tool/actions/workflows/python-3-10-test.yml
+    :alt: python 3.10
 
 Installation
 ============

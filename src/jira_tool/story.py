@@ -54,7 +54,7 @@ def convert_to_datetime(raw: Any) -> datetime:
 
 
 class Story(object):
-    def __init__(self, columns: list[tuple], compare_rules: list[tuple]) -> None:
+    def __init__(self, columns: 'list[tuple]', compare_rules: 'list[tuple]') -> None:
         if columns is None:
             raise ValueError("Columns must be provided!")
         self.compare_rules = compare_rules
@@ -131,13 +131,13 @@ class Story(object):
 
 
 class StoryFactory(object):
-    def __init__(self, columns: list[tuple]) -> None:
+    def __init__(self, columns: 'list[tuple]') -> None:
         if columns is None:
             raise ValueError("Columns must be provided!")
         self.columns = columns
         self.compare_rules = self.__generate_compare_rules()
 
-    def __generate_compare_rules(self) -> list[tuple]:
+    def __generate_compare_rules(self) -> 'list[tuple]':
         compare_rules = []
         for _, column_name, _, _, _, priority in self.columns:
             if priority > 0:
@@ -231,7 +231,7 @@ def compare_story(a: Story, b: Story) -> int:
     return 0
 
 
-def sort_stories(stories: list[Story], excel_defination: ExcelDefination):
+def sort_stories(stories: 'list[Story]', excel_defination: ExcelDefination):
     sort_rule = []
     excel_defination_columns = excel_defination.get_columns()
 
@@ -242,14 +242,14 @@ def sort_stories(stories: list[Story], excel_defination: ExcelDefination):
     _internal_sort_stories(stories, sort_rule)
 
 
-def _internal_sort_stories(stories: list[Story], keys: list[tuple]):
+def _internal_sort_stories(stories: 'list[Story]', keys: 'list[tuple]'):
     for key, isReversed in reversed(keys):
         stories.sort(key=attrgetter(key), reverse=isReversed)
 
 
 def raise_story_sequence_by_property(
-    stories: list[Story], property_name: str
-) -> list[Story]:
+    stories: 'list[Story]', property_name: str
+) -> 'list[Story]':
     if stories is None or len(stories) == 0:
         return
     # Use first story as example
