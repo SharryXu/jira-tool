@@ -33,5 +33,5 @@ Homepage = "https://github.com/SharryXu/jira-tool"
 where = ["src"]
 
 [tool.setuptools.package-data]
-"jira_tool.assets" = ["*"]
+"jira_tool.assets" = ["*.json", "*.conf"]
 

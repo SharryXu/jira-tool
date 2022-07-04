@@ -132,7 +132,7 @@ class ExcelDefination:
         for item in self.store:
             yield item
 
-    def get_columns(self) -> list[tuple]:
+    def get_columns(self) -> 'list[tuple]':
         result = []
         for item in self.store:
             result.append(item)
