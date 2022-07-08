@@ -40,6 +40,3 @@ __all__ = [
 ]
 
 del metadata
-
-
-logging.config.fileConfig(str(files("jira_tool.assets").joinpath("logging.conf")))
