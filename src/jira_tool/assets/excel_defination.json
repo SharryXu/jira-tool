@@ -36,7 +36,7 @@
         "Name": "milestone",
         "Type": "Milestone",
         "Sorted": true,
-        "IsDesc": true,
+        "IsDesc": false,
         "Priority": 0
     },
     {

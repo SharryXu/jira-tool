@@ -93,8 +93,8 @@ def read_excel_file(
         for column_index in range(len(row)):
             column = excel_defination_columns[column_index]
             story.set_value(column[2], column[1], row[column_index].value)
-            if column[1] is Milestone:
-                story[column[2]].calc_priority(sprint_schedule)
+            if column[2] is Milestone:
+                story[column[1]].calc_priority(sprint_schedule)
         stories.append(story)
 
     wb.close()
@@ -113,7 +113,7 @@ def _should_skip(row: list) -> bool:
 
 def output_to_csv_file(
     file: str,
-    stories: 'list[Story]',
+    stories: "list[Story]",
     over_write: bool = True,
 ):
     if file is None or not pathlib.Path(file).is_absolute():
@@ -134,9 +134,9 @@ def output_to_csv_file(
 
 def output_to_excel_file(
     file: str,
-    stories: 'list[Story]',
+    stories: "list[Story]",
     excel_defination: ExcelDefination,
-    columns_in_excel: 'list[str]' = None,
+    columns_in_excel: "list[str]" = None,
     over_write: bool = True,
 ):
     """
