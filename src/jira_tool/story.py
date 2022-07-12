@@ -9,7 +9,6 @@ from dateutil import parser
 from .excel_defination import ExcelDefination
 from .milestone import *
 from .priority import *
-from .sprint_schedule import SprintScheduleStore
 
 __all__ = [
     "Story",
@@ -54,12 +53,11 @@ def convert_to_datetime(raw: Any) -> datetime:
 
 
 class Story(object):
-    def __init__(self, columns: 'list[tuple]', compare_rules: 'list[tuple]') -> None:
-        if columns is None:
-            raise ValueError("Columns must be provided!")
-        self.compare_rules = compare_rules
-        self.columns = columns
-        for column in self.columns:
+    def __init__(self, factory: "StoryFactory") -> None:
+        if factory is None:
+            raise ValueError("Story must be created from a specific factory!")
+        self.factory = factory
+        for column in self.factory.columns:
             if column[2] is str:
                 setattr(self, column[1], "")
             elif column[2] is bool:
@@ -104,134 +102,134 @@ class Story(object):
         self.set_value(type(property_value), property_name, property_value)
 
     def __lt__(self, __o: object) -> bool:
-        return compare_story(self, __o) < 0
+        return self.factory.compare_story(self, __o) < 0
 
     def __le__(self, __o: object) -> bool:
-        return compare_story(self, __o) <= 0
+        return self.factory.compare_story(self, __o) <= 0
 
     def __gt__(self, __o: object) -> bool:
-        return compare_story(self, __o) > 0
+        return self.factory.compare_story(self, __o) > 0
 
     def __ge__(self, __o: object) -> bool:
-        return compare_story(self, __o) >= 0
+        return self.factory.compare_story(self, __o) >= 0
 
     def __eq__(self, __o: object) -> bool:
-        return compare_story(self, __o) == 0
+        return self.factory.compare_story(self, __o) == 0
 
     def __str__(self):
         separator = ", "
-        if self.columns is None:
-            return ""
-        else:
-            result = ""
-            for _, column_name, _, _, _, _ in self.columns:
-                if hasattr(self, column_name):
-                    result += f"{str(getattr(self, column_name))}{separator}"
-            return result
+        result = ""
+        for _, column_name, _, _, _, _ in self.factory.columns:
+            if hasattr(self, column_name):
+                result += f"{str(getattr(self, column_name))}{separator}"
+        return result
 
 
 class StoryFactory(object):
-    def __init__(self, columns: 'list[tuple]') -> None:
+    def __init__(self, columns: "list[tuple]") -> None:
         if columns is None:
             raise ValueError("Columns must be provided!")
-        self.columns = columns
-        self.compare_rules = self.__generate_compare_rules()
+        self._columns = columns
+        self._compare_rules = self.__generate_compare_rules()
 
-    def __generate_compare_rules(self) -> 'list[tuple]':
+    def __generate_compare_rules(self) -> "list[tuple]":
         compare_rules = []
-        for _, column_name, _, _, _, priority in self.columns:
+        for _, column_name, _, _, _, priority in self._columns:
             if priority > 0:
                 compare_rules.append((column_name, priority))
         compare_rules.sort(key=lambda r: r[1], reverse=True)
         return compare_rules
 
+    @property
+    def columns(self):
+        return self._columns
+
+    @property
+    def compare_rules(self):
+        return self._compare_rules
+
     def create_story(self) -> Story:
-        return Story(self.columns, self.compare_rules)
+        return Story(self)
 
+    def compare_story(self, a: Story, b: Story) -> int:
+        """
+        Compare two stories.
 
-def compare_story(a: Story, b: Story) -> int:
-    """
-    Compare two stories.
+        :parm a:
+            First story
+        :parm b:
+            Second story
+        :parm sort_rule:
+            Priority information
+        :return
+            1: means a > b
+            0: means a == b
+            -1: means a < b
+        """
+        if a.factory != b.factory or a.factory != self or b.factory != self:
+            raise ValueError("The compare stories were built by different factory.")
 
-    :parm a:
-        First story
-    :parm b:
-        Second story
-    :parm sort_rule:
-        Priority information
-    :return
-        1: means a > b
-        0: means a == b
-        -1: means a < b
-    """
-    if (
-        a.compare_rules is None
-        or b.compare_rules is None
-        or a.compare_rules != b.compare_rules
-    ):
-        raise ValueError("The compare rules is invalid.")
+        if len(self.compare_rules) == 0:
+            return 0
 
-    if len(a.compare_rules) == 0:
-        return 0
+        skip_index_of_a = []
+        skip_index_of_b = []
+        count = len(self.compare_rules)
+        while count > 0:
+            highest_property_of_a = None
+            highest_property_of_b = None
+            for i in range(len(self.compare_rules)):
+                if i in skip_index_of_a:
+                    continue
 
-    skip_index_of_a = []
-    skip_index_of_b = []
-    count = len(a.compare_rules)
-    while count > 0:
-        highest_property_of_a = None
-        highest_property_of_b = None
-        for i in range(len(a.compare_rules)):
-            if i in skip_index_of_a:
-                continue
+                if highest_property_of_a is None:
+                    # property_value, property_location
+                    highest_property_of_a = (a[self.compare_rules[i][0]], i)
 
-            if highest_property_of_a is None:
-                # property_value, property_location
-                highest_property_of_a = (a[a.compare_rules[i][0]], i)
+                if a[self.compare_rules[i][0]] > highest_property_of_a[0]:
+                    highest_property_of_a = (a[self.compare_rules[i][0]], i)
 
-            if a[a.compare_rules[i][0]] > highest_property_of_a[0]:
-                highest_property_of_a = (a[a.compare_rules[i][0]], i)
+            for i in range(len(self.compare_rules)):
+                if i in skip_index_of_b:
+                    continue
 
-        for i in range(len(a.compare_rules)):
-            if i in skip_index_of_b:
-                continue
+                if highest_property_of_b is None:
+                    highest_property_of_b = (b[self.compare_rules[i][0]], i)
 
-            if highest_property_of_b is None:
-                highest_property_of_b = (b[a.compare_rules[i][0]], i)
+                if b[self.compare_rules[i][0]] > highest_property_of_b[0]:
+                    highest_property_of_b = (b[self.compare_rules[i][0]], i)
 
-            if b[a.compare_rules[i][0]] > highest_property_of_b[0]:
-                highest_property_of_b = (b[a.compare_rules[i][0]], i)
+            skip_index_of_a.append(highest_property_of_a[1])
+            skip_index_of_b.append(highest_property_of_b[1])
 
-        skip_index_of_a.append(highest_property_of_a[1])
-        skip_index_of_b.append(highest_property_of_b[1])
-
-        # priority value
-        if highest_property_of_a[0] > highest_property_of_b[0]:
-            return 1
-        elif highest_property_of_a[0] == highest_property_of_b[0]:
-            if highest_property_of_a[1] < highest_property_of_b[1]:
-                return 1
-            elif highest_property_of_a[1] > highest_property_of_b[1]:
-                return -1
-        else:
-            return -1
-
-        # property location
-        if highest_property_of_a[1] > highest_property_of_b[1]:
-            return 1
-        elif highest_property_of_a[1] == highest_property_of_b[1]:
+            # priority value
             if highest_property_of_a[0] > highest_property_of_b[0]:
                 return 1
-            elif highest_property_of_a[0] < highest_property_of_b[0]:
+            elif highest_property_of_a[0] == highest_property_of_b[0]:
+                if highest_property_of_a[1] < highest_property_of_b[1]:
+                    return 1
+                elif highest_property_of_a[1] > highest_property_of_b[1]:
+                    return -1
+            else:
                 return -1
-        else:
-            return -1
 
-        count -= 1
-        continue
-    return 0
+            # property location
+            if highest_property_of_a[1] > highest_property_of_b[1]:
+                return 1
+            elif highest_property_of_a[1] == highest_property_of_b[1]:
+                if highest_property_of_a[0] > highest_property_of_b[0]:
+                    return 1
+                elif highest_property_of_a[0] < highest_property_of_b[0]:
+                    return -1
+            else:
+                return -1
+
+            count -= 1
+            continue
+        return 0
 
 
-def sort_stories(stories: 'list[Story]', excel_defination: ExcelDefination):
+def sort_stories(stories: "list[Story]", excel_defination: ExcelDefination):
     sort_rule = []
     excel_defination_columns = excel_defination.get_columns()
 
@@ -242,14 +240,14 @@ def sort_stories(stories: 'list[Story]', excel_defination: ExcelDefination):
     _internal_sort_stories(stories, sort_rule)
 
 
-def _internal_sort_stories(stories: 'list[Story]', keys: 'list[tuple]'):
+def _internal_sort_stories(stories: "list[Story]", keys: "list[tuple]"):
     for key, isReversed in reversed(keys):
         stories.sort(key=attrgetter(key), reverse=isReversed)
 
 
 def raise_story_sequence_by_property(
-    stories: 'list[Story]', property_name: str
-) -> 'list[Story]':
+    stories: "list[Story]", property_name: str
+) -> "list[Story]":
     if stories is None or len(stories) == 0:
         return
     # Use first story as example
