@@ -115,9 +115,3 @@ class TestStory:
         for i in range(len(stories) - 1):
             print(stories[i])
             assert stories[i] <= stories[i + 1]
-
-
-data = mock_data()
-data.sort(reverse=False)
-for i in range(len(data) - 1):
-    print(data[i])

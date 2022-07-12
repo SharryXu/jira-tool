@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import logging.config
-
 try:
     from importlib import metadata
     from importlib.metadata import version
