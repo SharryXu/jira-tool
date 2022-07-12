@@ -19,7 +19,7 @@ Installation
 ============
 `jira-tool` can be installed from PyPI using `pip` (note that the package name is different from the importable name)::
 
-    pip install sharry-jira-tool
+    pip install -U sharry-jira-tool
 
 Download
 ========
